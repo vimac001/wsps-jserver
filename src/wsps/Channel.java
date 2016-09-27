@@ -64,11 +64,40 @@ public class Channel {
         }
     }
 
+    /**
+     * Converts a comma separated channels string to an array list of channel names.
+     * @param channels Comma separated channel names.
+     * @return Array list of channels.
+     */
     public static ArrayList<String> parseChannelNames(String channels) {
-        return null; //TODO: Make me
+        String[] str = channels.split("(?<!\\\\),");
+        ArrayList<String> lst = new ArrayList<>(str.length);
+        for(String channel : str) {
+            lst.add(channel);
+        }
+
+        return lst;
     }
 
+    /**
+     * Converts an array list of channel names to a string of comma separated channel names.
+     * (Commas in channel names will be escaped by the method with a backslash.)
+     * @param channels Array list of channels.
+     * @return Comma separated string of channel names.
+     */
     public static String stringifyChannelNames(ArrayList<String> channels) {
-        return null; //TODO: Make me
+        String str = null;
+
+        for(String channel : channels) {
+            if(str == null) {
+                str = "";
+            } else {
+                str += ",";
+            }
+
+            str += channel.replace(",", "\\,");
+        }
+
+        return str;
     }
 }
