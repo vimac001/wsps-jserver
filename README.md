@@ -3,7 +3,8 @@
 
 #### [WSPS Documentation for API Developers](https://docs.google.com/document/d/1z65cn5PC74BamNzBEvYo6UwqTKxQEhBByh6a12RDuT8/edit?usp=sharing)
 
-### Documentation of API cooming soon.
+# Documentation of API cooming soon.
+The API documentation of wsps-jserver is in progress.
 
 # Links
 ### Client APIs
