@@ -73,7 +73,7 @@ public class Channel {
         String[] str = channels.split("(?<!\\\\),");
         ArrayList<String> lst = new ArrayList<>(str.length);
         for(String channel : str) {
-            lst.add(channel);
+            lst.add(channel.replace("\\,", ","));
         }
 
         return lst;

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 public class Client implements Subscriber {
     protected WebSocketClientWrapper wscw;
     protected ArrayList<String> channels;
+    protected boolean closed = false;
+
     /**
      * Initializes a new client representative.
      * @param wscw WebSocket server client object.
@@ -37,10 +39,10 @@ public class Client implements Subscriber {
 
     /**
      * Subscribe server to client at channels.
-     * @param channels Channel names.
+     * @param channelList Channel names.
      */
-    public void subscribe(ArrayList<String> channels) {
-        String msg = "s" + Channel.stringifyChannelNames(channels);
+    public void subscribe(ArrayList<String> channelList) {
+        String msg = "s" + Channel.stringifyChannelNames(channelList);
         this.wscw.send(msg);
     }
 
@@ -55,10 +57,10 @@ public class Client implements Subscriber {
 
     /**
      * Unsubscribe server from client at channels.
-     * @param channels Channel names.
+     * @param channelList Channel names.
      */
-    public void unsubscribe(ArrayList<String> channels) {
-        String msg = "u" + Channel.stringifyChannelNames(channels);
+    public void unsubscribe(ArrayList<String> channelList) {
+        String msg = "u" + Channel.stringifyChannelNames(channelList);
         this.wscw.send(msg);
     }
 
@@ -83,23 +85,23 @@ public class Client implements Subscriber {
 
     /**
      * Publish data at channels to all subscribers.
-     * @param channels Channel names.
+     * @param channelList Channel names.
      * @param eventData Published data.
      */
-    public void onPublish(ArrayList<String> channels, Data eventData) {
-        for(String channel : channels) {
+    public void onPublish(ArrayList<String> channelList, Data eventData) {
+        for(String channel : channelList) {
             Manager.publish(channel, eventData, this, Range.ServerOnly);
         }
     }
 
     /**
      * Publish data at channels to all subscribers.
-     * @param channels Channel names.
+     * @param channelList Channel names.
      * @param eventData Published data.
      * @param range The range, how far data was published.
      */
-    public void onPublish(ArrayList<String> channels, Data eventData, Range range) {
-        for(String channel : channels) {
+    public void onPublish(ArrayList<String> channelList, Data eventData, Range range) {
+        for(String channel : channelList) {
             Manager.publish(channel, eventData, this, range);
         }
     }
@@ -112,7 +114,7 @@ public class Client implements Subscriber {
     @Override
     public void notify(String channel, Event event) {
         if(event.getRange().value > Range.ServerOnly.value && event.sender != this) {
-            String msg = "p" + event.getRange().toString() + channel.length() + ':' + channel + event.getData().toNetworkString();
+            String msg = "p" + String.valueOf(event.getRange().value) + channel.length() + ':' + channel + event.getData().toNetworkString();
             this.wscw.send(msg);
         }
     }
@@ -131,10 +133,10 @@ public class Client implements Subscriber {
 
     /**
      * Subscribe the client to channels.
-     * @param channels Channel names.
+     * @param channelList Channel names.
      */
-    public void onSubscribe(ArrayList<String> channels) {
-        for(String channel : channels) {
+    public void onSubscribe(ArrayList<String> channelList) {
+        for(String channel : channelList) {
             Manager.subscribe(channel, this);
             if(!this.channels.contains(channel)) {
                 this.channels.add(channel);
@@ -155,10 +157,10 @@ public class Client implements Subscriber {
 
     /**
      * Unsubscribe the client from channels.
-     * @param channels Channel names.
+     * @param channelList Channel names.
      */
-    public void onUnsubscribe(ArrayList<String> channels) {
-        for(String channel : channels) {
+    public void onUnsubscribe(ArrayList<String> channelList) {
+        for(String channel : channelList) {
             Manager.unsubscribe(channel, this);
             if (this.channels.contains(channel)) {
                 this.channels.remove(channel);
@@ -173,10 +175,10 @@ public class Client implements Subscriber {
     public void onNewMessage(String msg) {
         ArrayList<String> channels;
         if(msg.startsWith("p")) {
-            byte range = Byte.parseByte(msg.substring(1, 1));
+            byte range = Byte.parseByte(msg.substring(1, 2));
             int i = msg.indexOf(':', 3);
             int cnmLng = Integer.parseInt(msg.substring(2, i++));
-            channels = Channel.parseChannelNames(msg.substring(i, cnmLng));
+            channels = Channel.parseChannelNames(msg.substring(i, i + cnmLng));
             i += cnmLng;
             String eventData = msg.substring(i);
 
@@ -192,12 +194,19 @@ public class Client implements Subscriber {
         //TODO: Something impossible happens, or maybe someone trys to hack the protocol?
     }
 
+    public boolean isClosed() {
+        return closed;
+    }
+
     /**
      * Call when WebSocket client closed the connection.
      * Unsubscribe from all channels.
      */
     public void onConnectionClosed() {
-        this.onUnsubscribe(this.channels);
+        closed = true;
+        for(String channel : this.channels) {
+            Manager.unsubscribe(channel, this);
+        }
         Manager.onClientClose(this);
     }
 }

@@ -22,7 +22,7 @@ public class Manager {
         if(channels.get(channel).getSubscribers().size() <= 0) {
             channelList.add(channel);
             for (Client c : clients) {
-                if(c != (Client)subscriber) {
+                if(c != subscriber && !c.isClosed()) {
                     c.subscribe(channel);
                 }
             }
@@ -54,7 +54,7 @@ public class Manager {
 
         if(newChannels.size() > 0) {
             for (Client c : clients) {
-                if (c != (Client) subscriber) {
+                if (c != subscriber && !c.isClosed()) {
                     c.subscribe(newChannels);
                 }
             }
@@ -73,7 +73,8 @@ public class Manager {
                 channelList.remove(channelList.indexOf(channel));
 
                 for (Client c : clients) {
-                    c.unsubscribe(channel);
+                    if(!c.isClosed())
+                        c.unsubscribe(channel);
                 }
             }
         }
@@ -97,7 +98,8 @@ public class Manager {
         }
 
         for (Client c : clients) {
-            c.unsubscribe(emptyChannels);
+            if(!c.isClosed())
+                c.unsubscribe(emptyChannels);
         }
     }
 
@@ -290,6 +292,471 @@ public class Manager {
         Manager.publish(channelsList, new Data(val), sender, range);
     }
 
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(String channel, long val, Object sender) {
+        Manager.publish(channel, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(String channel, int val, Object sender) {
+        Manager.publish(channel, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(String channel, short val, Object sender) {
+        Manager.publish(channel, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(String channel, byte val, Object sender) {
+        Manager.publish(channel, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(String channel, String val, Object sender) {
+        Manager.publish(channel, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(String channel, JObject val, Object sender) {
+        Manager.publish(channel, new Data(val), sender);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(String channel, float val, Object sender) {
+        Manager.publish(channel, new Data(val), sender);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(String channel, double val, Object sender) {
+        Manager.publish(channel, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(ArrayList<String> channelsList, long val, Object sender) {
+        Manager.publish(channelsList, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(ArrayList<String> channelsList, int val, Object sender) {
+        Manager.publish(channelsList, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(ArrayList<String> channelsList, short val, Object sender) {
+        Manager.publish(channelsList, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(ArrayList<String> channelsList, byte val, Object sender) {
+        Manager.publish(channelsList, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(ArrayList<String> channelsList, String val, Object sender) {
+        Manager.publish(channelsList, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(ArrayList<String> channelsList, JObject val, Object sender) {
+        Manager.publish(channelsList, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(ArrayList<String> channelsList, float val, Object sender) {
+        Manager.publish(channelsList, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param sender Publishing object.
+     */
+    public static void publish(ArrayList<String> channelsList, double val, Object sender) {
+        Manager.publish(channelsList, new Data(val), sender, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(String channel, long val, Range range) {
+        Manager.publish(channel, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(String channel, int val, Range range) {
+        Manager.publish(channel, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(String channel, short val, Range range) {
+        Manager.publish(channel, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(String channel, byte val, Range range) {
+        Manager.publish(channel, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(String channel, String val, Range range) {
+        Manager.publish(channel, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(String channel, JObject val, Range range) {
+        Manager.publish(channel, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(String channel, float val, Range range) {
+        Manager.publish(channel, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(String channel, double val, Range range) {
+        Manager.publish(channel, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(ArrayList<String> channelsList, long val, Range range) {
+        Manager.publish(channelsList, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(ArrayList<String> channelsList, int val, Range range) {
+        Manager.publish(channelsList, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(ArrayList<String> channelsList, short val, Range range) {
+        Manager.publish(channelsList, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(ArrayList<String> channelsList, byte val, Range range) {
+        Manager.publish(channelsList, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(ArrayList<String> channelsList, String val, Range range) {
+        Manager.publish(channelsList, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(ArrayList<String> channelsList, JObject val, Range range) {
+        Manager.publish(channelsList, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(ArrayList<String> channelsList, float val, Range range) {
+        Manager.publish(channelsList, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     * @param range How far to publish the data.
+     */
+    public static void publish(ArrayList<String> channelsList, double val, Range range) {
+        Manager.publish(channelsList, new Data(val), null, range);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(String channel, long val) {
+        Manager.publish(channel, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(String channel, int val) {
+        Manager.publish(channel, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(String channel, short val) {
+        Manager.publish(channel, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(String channel, byte val) {
+        Manager.publish(channel, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(String channel, String val) {
+        Manager.publish(channel, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(String channel, JObject val) {
+        Manager.publish(channel, new Data(val), null);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(String channel, float val) {
+        Manager.publish(channel, new Data(val), null);
+    }
+
+    /**
+     * Publish data to a channel.
+     * @param channel Channel name to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(String channel, double val) {
+        Manager.publish(channel, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(ArrayList<String> channelsList, long val) {
+        Manager.publish(channelsList, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(ArrayList<String> channelsList, int val) {
+        Manager.publish(channelsList, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(ArrayList<String> channelsList, short val) {
+        Manager.publish(channelsList, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(ArrayList<String> channelsList, byte val) {
+        Manager.publish(channelsList, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(ArrayList<String> channelsList, String val) {
+        Manager.publish(channelsList, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(ArrayList<String> channelsList, JObject val) {
+        Manager.publish(channelsList, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(ArrayList<String> channelsList, float val) {
+        Manager.publish(channelsList, new Data(val), null, Range.All);
+    }
+
+    /**
+     * Publish data to channels.
+     * @param channelsList Channel names to publish at.
+     * @param val Data to publish to subscribers.
+     */
+    public static void publish(ArrayList<String> channelsList, double val) {
+        Manager.publish(channelsList, new Data(val), null, Range.All);
+    }
+
     /**
      * Publish data to a channel.
      * @param channel Channel name to publish at.
@@ -355,11 +822,21 @@ public class Manager {
         }
     }
 
+
+
+    /**
+     * Do not call manually except you know, what you're doing!
+     * @param client Client object to add to clients list.
+     */
     public static void onNewClient(Client client) {
         clients.add(client);
         client.subscribe(channelList);
     }
 
+    /**
+     * Do not call manually except you know, what you're doing!
+     * @param client Client object to remove from clients list.
+     */
     public static void onClientClose(Client client) {
         clients.remove(client);
     }
