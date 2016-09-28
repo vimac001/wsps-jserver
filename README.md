@@ -3,12 +3,14 @@
 
 #### [WSPS Documentation for API Developers](https://docs.google.com/document/d/1z65cn5PC74BamNzBEvYo6UwqTKxQEhBByh6a12RDuT8/edit?usp=sharing)
 
+### Documentation of API cooming soon.
+
 # Links
 ### Client APIs
- + JavaScript [*wsps-jsclient*](https://github.com/vimac001/wsps-jsclient)
+ + JavaScript [wsps-jsclient](https://github.com/vimac001/wsps-jsclient)
 
 ### Server APIs
- + Java [wsps-jserver](https://github.com/vimac001/wsps-jserver) *in progress*
+ + Java [*wsps-jserver*](https://github.com/vimac001/wsps-jserver)
  + PHP *in progress*
  + .NET *in progress*
  + C++ *in progress*
